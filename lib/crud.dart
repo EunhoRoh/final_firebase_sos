@@ -4,30 +4,33 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
+/*
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class Crud extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // Remove the debug banner
       debugShowCheckedModeBanner: false,
       title: 'Kindacode.com',
-      home: HomePage(),
+      home: Crud(),
     );
   }
 }
+ */
+class Crud extends StatefulWidget {
 
-class HomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _CrudState createState() => _CrudState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _CrudState extends State<Crud> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 

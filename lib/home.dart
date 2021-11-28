@@ -15,18 +15,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'registerphonenumber.dart';
-import 'editphonenumber.dart';
-import 'managephonenumber.dart';
-
-import 'message_revise.dart';
-
-//import 'search.dart';
-//import 'mypage.dart';
-//import 'f_hotels.dart';
-import 'login.dart';
-//import 'detail.dart';
-//import 'package:url_launcher/url_launcher.dart';
+import 'package:final_firebase_sos/message_revise.dart';
+import 'package:final_firebase_sos/search.dart';
+import 'package:final_firebase_sos/mypage.dart';
+import 'package:final_firebase_sos/f_hotels.dart';
+import 'package:final_firebase_sos/login.dart';
+import 'package:final_firebase_sos/detail.dart';
+import 'package:final_firebase_sos/crud.dart';
 
 const _url = 'https://www.handong.edu/';
 
@@ -37,7 +32,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Main'),
+        title: const Text(''),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
@@ -47,7 +42,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const RegisterPhoneNumberPage()),
+                MaterialPageRoute(builder: (context) => const Search()),
               );
             },
           ),
@@ -69,13 +64,31 @@ class HomePage extends StatelessWidget {
             ListTile(
                 leading: IconButton(
                   icon: const Icon(
-                    Icons.contact_page,
-                    semanticLabel: '연락처 등록',
+                    Icons.home,
                   ),
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPhoneNumberPage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  },
+                ),
+                title: const Text('홈 화면'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                }),
+            ListTile(
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.contact_page,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Crud()),
                     );
                   },
                 ),
@@ -83,7 +96,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const RegisterPhoneNumberPage()),
+                    MaterialPageRoute(builder: (context) => Crud()),
                   );
                 }),
             ListTile(
@@ -95,7 +108,7 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ManagePhoneNumberPage()),
+                      MaterialPageRoute(builder: (context) => const Search()),
                     );
                   },
                 ),
@@ -103,7 +116,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ManagePhoneNumberPage()),
+                    MaterialPageRoute(builder: (context) => const Search()),
                   );
                 }),
             ListTile(
@@ -135,7 +148,7 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPhoneNumberPage()),
+                      MaterialPageRoute(builder: (context) => const MyPage()),
                     );
                   },
                 ),
@@ -143,7 +156,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const RegisterPhoneNumberPage()),
+                    MaterialPageRoute(builder: (context) => const MyPage()),
                   );
                 }),
             ListTile(
@@ -178,7 +191,7 @@ class HomePage extends StatelessWidget {
             Column(
               children: <Widget>[
                 IconButton(
-                  icon : Image.asset('assets/sos_button.png'),
+                  icon : Image.asset('image/sos_button.png'),
                   iconSize: 300,
                   onPressed: () {},
                 ),
@@ -186,19 +199,6 @@ class HomePage extends StatelessWidget {
                 const Text(
                   '위급상황 시 누르세요!',
                   style: TextStyle(height: 1, fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            ButtonBar(
-              children: <Widget>[
-                TextButton(
-                  child: const Text('Sign Up'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
-                  },
                 ),
               ],
             ),

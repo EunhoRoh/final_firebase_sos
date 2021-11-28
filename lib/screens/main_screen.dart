@@ -3,6 +3,7 @@ import 'package:final_firebase_sos/config/palette.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:final_firebase_sos/screens/chat_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:final_firebase_sos/home.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({Key? key}) : super(key: key);
@@ -418,7 +419,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ChatScreen();
+                                  return HomePage();
                                 },
                               ),
                             );
@@ -448,7 +449,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ChatScreen();
+                                  return HomePage();
                                 },
                               ),
                             );
