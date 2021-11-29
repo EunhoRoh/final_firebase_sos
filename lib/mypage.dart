@@ -25,6 +25,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -34,9 +36,25 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  //final ImagePicker _picker = ImagePicker();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  CollectionReference _profiles =
+  FirebaseFirestore.instance.collection('profile');
+
   String dropdownValue = '성별';
   String dropdownValue2 = '관계';
+
+  Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
+    String action = 'update';
+    if (documentSnapshot != null) {
+      action = 'update';
+      _nameController.text = documentSnapshot['name'].toString();
+      _phoneController.text = documentSnapshot['phone'].toString();
+    }
+
+  }
+
  /*
   @override
   void initState(){
@@ -271,6 +289,7 @@ class _MyPageState extends State<MyPage> {
                             height : 30,
                             width : 150,
                             child: const TextField(
+
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
                                  border: OutlineInputBorder(),
@@ -484,7 +503,7 @@ class _MyPageState extends State<MyPage> {
             Container(
               margin: const EdgeInsets.only(left: 130.0, right: 130.0),
               child: ElevatedButton(
-                child: Text('저장'),
+                child: Text('사진'),
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -493,6 +512,21 @@ class _MyPageState extends State<MyPage> {
                             side: BorderSide(color: Colors.red, width: 2.0)))),
                 onPressed: () {
                   _getImage(ImageSource.gallery);
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 130.0, right: 130.0),
+              child: ElevatedButton(
+                child: Text('저장'),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.red, width: 2.0)))),
+                onPressed: () {
+                  //_createOrUpdate(documentSnapshot));
                 },
               ),
             ),
