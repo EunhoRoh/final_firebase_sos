@@ -3,27 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-/*
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
-
-class Crud extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      // Remove the debug banner
-      debugShowCheckedModeBanner: false,
-      title: 'Kindacode.com',
-      home: Crud(),
-    );
-  }
-}
- */
 class Crud extends StatefulWidget {
 
   @override
@@ -34,13 +16,17 @@ class _CrudState extends State<Crud> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  CollectionReference _productss =
-  FirebaseFirestore.instance.collection('products');
+  var currentUser = FirebaseAuth.instance.currentUser;
+
+
 
   // This function is triggered when the floatting button or one of the edit buttons is pressed
   // Adding a product if no documentSnapshot is passed
   // If documentSnapshot != null then update an existing product
   Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
+    CollectionReference _productss =
+    FirebaseFirestore.instance.collection('contact').doc(currentUser!.uid).collection('contacts');
+
     String action = 'create';
     if (documentSnapshot != null) {
       action = 'update';
@@ -108,6 +94,8 @@ class _CrudState extends State<Crud> {
 
   // Deleteing a product by id
   Future<void> _deleteProduct(String productId) async {
+    CollectionReference _productss =
+    FirebaseFirestore.instance.collection('contact').doc(currentUser!.uid).collection('products');
     await _productss.doc(productId).delete();
 
     // Show a snackbar
@@ -117,6 +105,8 @@ class _CrudState extends State<Crud> {
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference _productss =
+    FirebaseFirestore.instance.collection('contact').doc(currentUser!.uid).collection('products');
     return Scaffold(
       appBar: AppBar(
         title: Text('Kindacode.com'),

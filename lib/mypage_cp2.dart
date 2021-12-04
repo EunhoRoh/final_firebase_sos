@@ -37,43 +37,40 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  TextEditingController temp1 = new TextEditingController();
+  TextEditingController temp2 = new TextEditingController();
+
   CollectionReference _profiles =
-  FirebaseFirestore.instance.collection('profile');
-
-  TextEditingController saved_name = new TextEditingController(text : "   ");
-  TextEditingController saved_phone = new TextEditingController(text : "");
-  TextEditingController saved_age = new TextEditingController(text : "");
-  TextEditingController saved_job = new TextEditingController(text : "");
-  TextEditingController saved_address = new TextEditingController(text : "");
-
-  TextEditingController protect_name = new TextEditingController(text : "");
-  TextEditingController protect_address = new TextEditingController(text : "");
+      FirebaseFirestore.instance.collection('profile');
 
   String dropdownValue = '성별';
   String dropdownValue2 = '관계';
 
   var currentUser = FirebaseAuth.instance.currentUser;
 
-  Future<void> _createOrUpdate(
-      String name, String phone, String age, String job, String address, String pro_name, String pro_phone, String gender) async {
+  Future<void> _createOrUpdate(String name, String phone) async {
     DocumentReference documentReferencer = _profiles.doc(currentUser!.uid);
 
     Map<String, String> data = <String, String>{
       "name": name,
       "phone": phone,
-      "gender": gender,
-      "age" : age,
-      "job" : job,
-      "address" : address,
-      "protect_name" : pro_name,
-      "protect_phone" : pro_phone,
     };
     await documentReferencer
         .set(data)
         .whenComplete(() => print("Notes item added to the database"))
         .catchError((e) => print(e));
+    //await _profiles.add({"name": name, "phone" : phone});
   }
 
+  /*
+  @override
+  void initState(){
+    super.initState();
+    setImage();
+  }
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,27 +218,12 @@ class _MyPageState extends State<MyPage> {
           future: _profiles.doc(currentUser!.uid).get(),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasData && !snapshot.data!.exists) {
-              saved_name.text = "";
-              saved_phone.text = "";
-              saved_age.text = "";
-              saved_job.text = "";
-              saved_address.text = "";
-              protect_name.text = "";
-              protect_address.text = "";
-            }
 
-            else if(snapshot.connectionState == ConnectionState.done){
-              print("here2");
-              Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-              saved_name.text = data["name"];
-              saved_phone.text = data["phone"];
-              saved_age.text = data["age"];
-              saved_job.text = data["job"];
-              saved_address.text = data["address"];
-              protect_name.text = data["protect_name"];
-              protect_address.text = data["protect_phone"];
-              dropdownValue = data["gender"];
+            if(snapshot.connectionState == ConnectionState.done){
+              temp1.text = "name";
+              temp2.text = "phone";
+              //temp1.text = snapshot.data!.get("name");
+              //temp2.text = snapshot.data!.get("phone");
             }
 
 
@@ -264,18 +246,18 @@ class _MyPageState extends State<MyPage> {
                         const SizedBox(width: 10),
                         image != null
                             ? ClipOval(
-                          child: Image.file(
-                            image!,
-                            fit: BoxFit.cover,
-                            width: 70,
-                            height: 70,
-                          ),
-                        )
+                                child: Image.file(
+                                  image!,
+                                  fit: BoxFit.cover,
+                                  width: 70,
+                                  height: 70,
+                                ),
+                              )
                             : IconButton(
-                          icon: Image.asset('image/sos_button.png'),
-                          iconSize: 70,
-                          onPressed: () {},
-                        ),
+                                icon: Image.asset('image/sos_button.png'),
+                                iconSize: 70,
+                                onPressed: () {},
+                              ),
                       ]),
                       const SizedBox(height: 10.0),
                       Container(
@@ -311,7 +293,7 @@ class _MyPageState extends State<MyPage> {
                                       border: OutlineInputBorder(),
                                       hintText: '이름',
                                     ),
-                                    controller: saved_name,
+                                    controller: temp1,
                                   ),
                                 ),
                                 const SizedBox(width: 40),
@@ -341,7 +323,7 @@ class _MyPageState extends State<MyPage> {
                                       border: OutlineInputBorder(),
                                       hintText: '전화번호',
                                     ),
-                                    controller: saved_phone,
+                                    controller: temp2,
                                   ),
                                 ),
                               ],
@@ -381,12 +363,12 @@ class _MyPageState extends State<MyPage> {
                                         '남',
                                         '여',
                                       ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
                                     )),
                               ],
                             ),
@@ -407,14 +389,13 @@ class _MyPageState extends State<MyPage> {
                                 Container(
                                   height: 30,
                                   width: 150,
-                                  child: TextField(
+                                  child: const TextField(
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 5.0, 10.0, 5.0),
                                       border: OutlineInputBorder(),
                                       hintText: '나이',
                                     ),
-                                    controller: saved_age,
                                   ),
                                 ),
                               ],
@@ -436,14 +417,13 @@ class _MyPageState extends State<MyPage> {
                                 Container(
                                   height: 30,
                                   width: 150,
-                                  child: TextField(
+                                  child: const TextField(
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 5.0, 10.0, 5.0),
                                       border: OutlineInputBorder(),
                                       hintText: '직장',
                                     ),
-                                    controller: saved_job,
                                   ),
                                 ),
                               ],
@@ -465,14 +445,13 @@ class _MyPageState extends State<MyPage> {
                                 Container(
                                   height: 30,
                                   width: 240,
-                                  child: TextField(
+                                  child: const TextField(
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 5.0, 10.0, 5.0),
                                       border: OutlineInputBorder(),
                                       hintText: '주소',
                                     ),
-                                    controller: saved_address,
                                   ),
                                 ),
                               ],
@@ -520,14 +499,13 @@ class _MyPageState extends State<MyPage> {
                                 Container(
                                   height: 30,
                                   width: 100,
-                                  child: TextField(
+                                  child: const TextField(
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 5.0, 10.0, 5.0),
                                       border: OutlineInputBorder(),
                                       hintText: '이름',
                                     ),
-                                    controller: protect_name,
                                   ),
                                 ),
                                 const SizedBox(
@@ -536,14 +514,13 @@ class _MyPageState extends State<MyPage> {
                                 Container(
                                   height: 30,
                                   width: 130,
-                                  child: TextField(
+                                  child: const TextField(
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.fromLTRB(
                                           10.0, 5.0, 10.0, 5.0),
                                       border: OutlineInputBorder(),
                                       hintText: '전화번호',
                                     ),
-                                    controller: protect_address,
                                   ),
                                 ),
                                 Container(
@@ -578,12 +555,12 @@ class _MyPageState extends State<MyPage> {
                                         '자녀',
                                         '지인'
                                       ].map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
                                     )),
                               ],
                             ),
@@ -604,13 +581,13 @@ class _MyPageState extends State<MyPage> {
                       child: Text('사진'),
                       style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.red),
+                              MaterialStateProperty.all(Colors.red),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                      color: Colors.red, width: 2.0)))),
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(
+                                          color: Colors.red, width: 2.0)))),
                       onPressed: () {
                         _getImage(ImageSource.gallery);
                       },
@@ -622,16 +599,15 @@ class _MyPageState extends State<MyPage> {
                       child: Text('저장'),
                       style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.red),
+                              MaterialStateProperty.all(Colors.red),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(
-                                      color: Colors.red, width: 2.0)))),
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(
+                                          color: Colors.red, width: 2.0)))),
                       onPressed: () {
-                        _createOrUpdate(saved_name.text, saved_phone.text, saved_age.text, saved_job.text, saved_address.text,
-                            protect_name.text, protect_address.text, dropdownValue);
+                        _createOrUpdate(temp1.text, temp2.text);
                       },
                     ),
                   ),

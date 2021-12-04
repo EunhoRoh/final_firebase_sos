@@ -53,20 +53,28 @@ class _MyPageState extends State<MyPage> {
   String dropdownValue2 = '관계';
 
   var currentUser = FirebaseAuth.instance.currentUser;
+/*
+  Future myFuture;
 
+  @override void initState(){
+    myFuture = _profiles.doc(currentUser!.uid).get();
+    super.initState();
+  }
+*/
   Future<void> _createOrUpdate(
-      String name, String phone, String age, String job, String address, String pro_name, String pro_phone, String gender) async {
+      String name, String phone, String gender, String age, String job, String address, String pro_name, String pro_phone, String relation) async {
     DocumentReference documentReferencer = _profiles.doc(currentUser!.uid);
 
     Map<String, String> data = <String, String>{
       "name": name,
       "phone": phone,
-      "gender": gender,
-      "age" : age,
+    "gender" : gender,
+    "age" : age,
       "job" : job,
       "address" : address,
       "protect_name" : pro_name,
       "protect_phone" : pro_phone,
+      "relationship" : relation,
     };
     await documentReferencer
         .set(data)
@@ -236,12 +244,13 @@ class _MyPageState extends State<MyPage> {
               Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
               saved_name.text = data["name"];
               saved_phone.text = data["phone"];
+              dropdownValue = data["gender"];
               saved_age.text = data["age"];
               saved_job.text = data["job"];
               saved_address.text = data["address"];
               protect_name.text = data["protect_name"];
               protect_address.text = data["protect_phone"];
-              dropdownValue = data["gender"];
+              dropdownValue2 = data["relationship"];
             }
 
 
@@ -630,8 +639,8 @@ class _MyPageState extends State<MyPage> {
                                   side: BorderSide(
                                       color: Colors.red, width: 2.0)))),
                       onPressed: () {
-                        _createOrUpdate(saved_name.text, saved_phone.text, saved_age.text, saved_job.text, saved_address.text,
-                            protect_name.text, protect_address.text, dropdownValue);
+                        _createOrUpdate(saved_name.text, saved_phone.text, dropdownValue, saved_age.text, saved_job.text, saved_address.text,
+                            protect_name.text, protect_address.text, dropdownValue2);
                       },
                     ),
                   ),

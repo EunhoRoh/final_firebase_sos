@@ -54,14 +54,12 @@ class _MyPageState extends State<MyPage> {
 
   var currentUser = FirebaseAuth.instance.currentUser;
 
-  Future<void> _createOrUpdate(
-      String name, String phone, String age, String job, String address, String pro_name, String pro_phone, String gender) async {
+  Future<void> _createOrUpdate(String name, String phone, String age, String job, String address, String pro_name, String pro_phone) async {
     DocumentReference documentReferencer = _profiles.doc(currentUser!.uid);
 
     Map<String, String> data = <String, String>{
       "name": name,
       "phone": phone,
-      "gender": gender,
       "age" : age,
       "job" : job,
       "address" : address,
@@ -221,27 +219,25 @@ class _MyPageState extends State<MyPage> {
           future: _profiles.doc(currentUser!.uid).get(),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasData && !snapshot.data!.exists) {
-              saved_name.text = "";
-              saved_phone.text = "";
-              saved_age.text = "";
-              saved_job.text = "";
-              saved_address.text = "";
-              protect_name.text = "";
-              protect_address.text = "";
-            }
+                if (snapshot.hasData && !snapshot.data!.exists) {
+                  saved_name.text = "";
+                  saved_phone.text = "";
+                  saved_age.text = "";
+                  saved_job.text = "";
+                  saved_address.text = "";
+                  protect_name.text = "";
+                  protect_address.text = "";
+                }
 
-            else if(snapshot.connectionState == ConnectionState.done){
-              print("here2");
+                else if(snapshot.connectionState == ConnectionState.done){
               Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
               saved_name.text = data["name"];
               saved_phone.text = data["phone"];
               saved_age.text = data["age"];
               saved_job.text = data["job"];
               saved_address.text = data["address"];
-              protect_name.text = data["protect_name"];
-              protect_address.text = data["protect_phone"];
-              dropdownValue = data["gender"];
+              protect_name.text = data["pro_name"];
+              protect_address.text = data["pro_phone"];
             }
 
 
@@ -631,7 +627,7 @@ class _MyPageState extends State<MyPage> {
                                       color: Colors.red, width: 2.0)))),
                       onPressed: () {
                         _createOrUpdate(saved_name.text, saved_phone.text, saved_age.text, saved_job.text, saved_address.text,
-                            protect_name.text, protect_address.text, dropdownValue);
+                        protect_name.text, protect_address.text);
                       },
                     ),
                   ),

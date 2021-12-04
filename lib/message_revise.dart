@@ -13,33 +13,78 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-
-class MessageRevise extends StatelessWidget {
+class MessageRevise extends StatefulWidget {
   const MessageRevise({Key? key}) : super(key: key);
+
+  @override
+  _MessageReviseState createState() => _MessageReviseState();
+}
+
+class _MessageReviseState extends State<MessageRevise> {
+
+  TextEditingController contents = new TextEditingController();
+
+  CollectionReference _message =
+  FirebaseFirestore.instance.collection('message');
+
+  var currentUser = FirebaseAuth.instance.currentUser;
+
+  Future<void> _createOrUpdate(String contents) async {
+    DocumentReference documentReferencer = _message.doc(currentUser!.uid);
+
+    Map<String, String> data = <String, String>{
+      "message" : contents,
+    };
+    await documentReferencer.set(data)  .whenComplete(() => print("Notes item added to the database"))
+        .catchError((e) => print(e));
+    //await _profiles.add({"name": name, "phone" : phone});
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: Center(
+      body: FutureBuilder<DocumentSnapshot>(
+      future: _message.doc(currentUser!.uid).get(),
+    builder:
+    (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      if (snapshot.hasData && !snapshot.data!.exists) {
+        //contents.text = "";
+      }
+      else if (snapshot.connectionState == ConnectionState.done) {
+        Map<String, dynamic> data = snapshot.data!.data() as Map<String,
+            dynamic>;
+        contents.text = data["message"];
+      }
+      return Center(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
             const SizedBox(height: 80.0),
             Column(
-              children: const <Widget> [
+              children: <Widget>[
                 Text(
                   'SOS 메세지 수정',
-                  style: TextStyle(height: 1, fontSize: 30, color: Colors.grey, fontWeight: FontWeight.bold),
+                  style: TextStyle(height: 1,
+                      fontSize: 30,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 50.0),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child:Text(
+                  child: Text(
                     '  메세지를 적으세요',
-                    style: TextStyle(height: 1, fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(height: 1,
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
 
@@ -52,26 +97,30 @@ class MessageRevise extends StatelessWidget {
                       border: OutlineInputBorder(),
                       hintText: 'Enter a search term',
                     ),
+                    controller: contents,
                   ),
                 ),
               ],
             ),
             Container(
               margin: const EdgeInsets.only(left: 130.0, right: 130.0),
-              child :ElevatedButton(
+              child: ElevatedButton(
                 child: Text('저장'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
                             side: BorderSide(color: Colors.red, width: 2.0)))),
-                onPressed: () {},
+                onPressed: () {
+                  _createOrUpdate(contents.text);
+                },
               ),
             ),
-              ],
+          ],
         ),
-      ),
+      );
+    }),
     );
   }
 }
